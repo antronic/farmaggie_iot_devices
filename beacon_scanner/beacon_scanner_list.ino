@@ -9,11 +9,15 @@ void setup() {
   Serial.println("Start!");
 }
 
-boolean NL = true;
+void list_devices() {
+
+}
 
 boolean bluetooth_in = false;
-
 String response = "";
+
+boolean serial_in = false;
+String request = "";
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -33,9 +37,19 @@ void loop() {
   }
 
   if(Serial.available() > 0) {
+    serial_in = true;
     char c = ' ';
     c = Serial.read();
 
-    BTSerial.print(c);
+    // BTSerial.print(c);
+    request += c;
+  } else if (serial_in) {
+    serial_in = false;
+    if (request == "AT+DISI") {
+      Serial.println("IN");
+    } else {
+      BTSerial.print(request);
+    }
+    request = "";
   }
 }
