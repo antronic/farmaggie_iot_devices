@@ -6,6 +6,9 @@
 
 SoftwareSerial BTSerial(12, 11);
 
+extern void loop2();
+extern void loop3();
+
 void setup()
 {
   // put your setup code here, to run once:
@@ -83,12 +86,12 @@ bool startsWith(const char *pre, const char *str)
 boolean disic = false;
 boolean disic_ok = false;
 
-void identify_device(String device) {
-  if (startsWith("OK+DISC")) {
-    disic_ok = true;
-
-  }
-}
+//void identify_device(String device) {
+//  if (startsWith("OK+DISC", device)) {
+//    disic_ok = true;
+//
+//  }
+//}
 
 boolean disi_ok = false;
 boolean disi = false;
@@ -102,15 +105,15 @@ void list_devices(String response)
     {
       disi = false;
       disi_ok = false;
-      break;
+//      break;
     }
 
-    identify_device(response);
+//    identify_device(response);
   }
 
   if (!disi_ok) {
     if (response != String("OK+DISIS"))
-      disi_ok = true
+      disi_ok = true;
   }
 }
 
@@ -120,9 +123,38 @@ String response = "";
 boolean serial_in = false;
 String request = "";
 
+int every = 5;
+int countTime = 0;
+
+void loop2() {
+  delay(1000);
+  Serial.println("Loop2");
+}
+
+void loop3() {
+  delay(500);
+  Serial.println("Loop3");
+}
+
+int count = 0;
+long lastExecute = millis();
+long lastExecute2 = millis();
+
 void loop()
 {
-  // put your main code here, to run repeatedly:
+  const int REFRESH_INTERVAL = 1000;
+  long current = millis();
+  
+  if (current - lastExecute >= REFRESH_INTERVAL) {
+    lastExecute = current;
+    Serial.println("I will print every 1s");
+  }
+
+  if (current - lastExecute2 >= 5000) {
+    lastExecute2 = current;
+    BTSerial.print("AT+DISI?");
+//    Serial.println("I will print every 0.5s");
+  }
 
   if (BTSerial.available() > 0)
   {
